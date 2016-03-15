@@ -1,6 +1,7 @@
 var back;
 var legend;
 var memorial;
+var translation;
 
 var nations = [];
 var nations_number = 10;
@@ -21,12 +22,44 @@ var font;
 var red;
 var green;
 
+var language;
+
+//text
+var text_button_back;
+var text_button_legend;
+var text_button_memorial;
+var text_button_translation;
+
+var text_legend_title;
+
+
+var text_if_title;
+var text_if_situation;
+var text_if_policies;
+
+var text_if_pol;
+var text_if_soc;
+var text_if_eco;
+var text_if_wealth;
+var text_if_employment;
+var text_if_regime;
+var text_if_climate;
+var text_if_welcoming;
+var text_if_diversity;
+
+var text_if_borders;
+var text_if_subsidies;
+var text_if_family;
+var text_if_naturalization;
+
 function preload(){
   font = loadFont('../sim-border/fonts/EdwardPro-ExtraLight.otf');
 }
 
 function setup(){
  var cnv = createCanvas(windowWidth, windowHeight);
+
+ language = 'fr';
 
  territory_max = height*0.45;
 
@@ -54,7 +87,6 @@ function setup(){
   }, 3000);
 
   back = document.createElement('a');
-  back.innerHTML = 'accueil';
   back.style.left = "1%";
   back.style.top = '1%';
   back.style.position = 'absolute';
@@ -67,7 +99,6 @@ function setup(){
   document.body.appendChild(back);
 
   legend = document.createElement('a');
-  legend.innerHTML = 'légende';
   legend.style.left = "1%";
   legend.style.bottom = '1%';
   legend.style.position = 'absolute';
@@ -80,7 +111,6 @@ function setup(){
   document.body.appendChild(legend);
 
   memorial = document.createElement('span');
-  memorial.innerHTML = 'morts en chemin: 0';
   memorial.style.position = 'absolute';
   memorial.style.right = "1%";
   memorial.style.top = '1%';
@@ -89,8 +119,21 @@ function setup(){
   memorial.style.padding = '0.5%';
   memorial.style.fontFamily = 'EdwardPro-Normal';
   memorial.style.fontSize = '1.5em';
-  // legend.setAttribute('onclick', 'toggleLegend()');
   document.body.appendChild(memorial);
+
+  translation = document.createElement('span');
+  translation.style.position = 'absolute';
+  translation.style.left = "1%";
+  translation.style.top = '10%';
+  translation.style.color = 'black';
+  translation.style.background = 'rgba(255, 255, 255, 0.75)';
+  translation.style.padding = '0.5%';
+  translation.style.fontFamily = 'EdwardPro-Normal';
+  translation.style.fontSize = '1.5em';
+  translation.setAttribute('onclick', 'toggleTranslate()');
+  document.body.appendChild(translation);
+
+   setupLanguage(language);
 }
 
 function update(){
@@ -237,7 +280,6 @@ function setupInterfaces(){
 function remove(id){
   for(var i = 0; i < refugees.length; i++){
     if(refugees[i].identity == id){
-      console.log('removing refugee',id);
       refugees.splice(i, 1);
     }
   }
@@ -261,7 +303,7 @@ function drawLegendFrame(){
 
 function drawLegendText(){
   textAlign(CENTER);
-  text("LÉGENDE", width*0.5, height*0.15);
+  text(text_legend_title, width*0.5, height*0.15);
   //LEGENDE:
   // - countries
   // - routes
@@ -295,10 +337,8 @@ function mouseReleased(){
     //SWITCH BETWEEN STATE AND POLICY
     if(mouseY > height*0.1 && mouseY < height*0.3){
       if(mouseX > width*0.2 && mouseX < width*0.5){
-        console.log('displaying state');
         current_interface.displaying_state = true;
       }else if(mouseX > width*0.5 && mouseX < width*0.8){
-        console.log('displaying policy');
         current_interface.displaying_state = false;
       }
     }
@@ -318,7 +358,79 @@ function mouseReleased(){
 
 function acknowledgeDeath(){
   deaths++;
-  memorial.setInnerHTML = 'morts en chemin: ' + deaths;
+  memorial.setInnerHTML = text_button_memorial + deaths;
+}
+
+function toggleTranslate(){
+  console.log('toggle',language);
+  if(language == 'fr')
+    language = 'en';
+  else
+    language = 'fr';
+
+  setupLanguage(language);
+}
+
+function setupLanguage(lang){
+  console.log('current',language);
+  if(lang == 'fr'){
+    text_button_back = 'retour';
+    text_button_legend = 'légende';
+    text_button_memorial = 'morts en chemin: ';
+    text_button_translation = 'english';
+
+    text_legend_title = 'LÉGENDE';
+
+    text_if_title = 'RÉPUBLIQUE NATIONALE';
+    text_if_situation = 'SITUATION INTERNE';
+    text_if_policies = 'POLITIQUES D\'IMMIGRATION';
+
+    text_if_pol = 'Politique';
+    text_if_soc = 'Économie';
+    text_if_eco = 'Social';
+    text_if_wealth = 'Richesse nationale';
+    text_if_employment = 'Taux d\'emploi';
+    text_if_regime = 'Stabilité politique';
+    text_if_climate = 'Climat social';
+    text_if_welcoming = 'Tolérance envers autrui';
+    text_if_diversity = 'Diversité de la population';
+
+    text_if_borders = 'Ouverture des frontières';
+    text_if_subsidies = 'Allocations';
+    text_if_family = 'Réunion familiale';
+    text_if_naturalization = 'Processus de nationalisation';
+  }else if(lang == 'en'){
+    text_button_back = 'back';
+    text_button_legend = 'legend';
+    text_button_memorial = 'deaths on the way: ';
+    text_button_translation = 'français';
+
+    text_legend_title = 'LEGEND';
+
+    text_if_title = 'NATIONAL REPUBLIC';
+    text_if_situation = 'DOMESTIC SITUATION';
+    text_if_policies = 'IMMIGRATION POLICIES';
+
+    text_if_pol = 'Politics';
+    text_if_soc = 'Economy';
+    text_if_eco = 'Social';
+    text_if_wealth = 'Domestic wealth';
+    text_if_employment = 'Employment rate';
+    text_if_regime = 'Political stability';
+    text_if_climate = 'Social climate';
+    text_if_welcoming = 'Tolerance to others';
+    text_if_diversity = 'Population diversity';
+
+    text_if_borders = 'Border openness';
+    text_if_subsidies = 'Subsidies';
+    text_if_family = 'Family reunions';
+    text_if_naturalization = 'Naturalization process';
+  }
+
+  back.innerHTML = text_button_back;
+  legend.innerHTML = text_button_legend;
+  memorial.innerHTML = text_button_memorial+''+deaths.toString();
+  translation.innerHTML = text_button_translation;
 }
 
 function keyPressed(){

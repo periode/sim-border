@@ -192,7 +192,12 @@ Nation.prototype.display = function(){
   noStroke();
   fill(0);
   textAlign(CENTER);
-  text('refugiés: '+this.number_of_refugees*1000, 0, 20);
+  
+  if(language == 'fr')
+    text('réfugiés: '+this.number_of_refugees*1000, 0, 20);
+  else
+    text('refugees: '+this.number_of_refugees*1000, 0, 20);
+
   pop();
   stroke(0, 50);
   strokeWeight(1);

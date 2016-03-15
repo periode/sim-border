@@ -57,46 +57,33 @@ var Interface = function(_nation, _index){
   this.displayState = function(){
     textAlign(CENTER);
     fill(this.stroke_col);
-    text('RÉPUBLIQUE NATIONALE', 0, -height*0.35);
+    text(text_if_title, 0, -height*0.35);
 
     textSize(24);
     fill(this.stroke_col, this.alpha);
     // text('STATE OF AFFAIRS', -width*0.2, -height*0.3);
-    text('SITUATION NATIONALE', -width*0.2, -height*0.3);
+    text(text_if_situation, -width*0.2, -height*0.3);
     fill(this.stroke_col, this.alpha*0.25);
     // text('POLICIES', width*0.2, -height*0.3);
-    text('POLITIQUES', width*0.2, -height*0.3);
+    text(text_if_policies, width*0.2, -height*0.3);
 
 
     textSize(14);
     fill(this.stroke_col, this.alpha);
     textAlign(CENTER);
-    // text('ECONOMY', 0, -height*0.25);
-    // text('POLITICS', 0, 0);
-    // text('SOCIETY', 0, height*0.25);
-    text('ÉCONOMIE', 0, -height*0.25);
-    text('POLITIQUE', 0, 0);
-    text('SOCIÉTÉ', 0, height*0.25);
+    text(text_if_eco, 0, -height*0.25);
+    text(text_if_pol, 0, 0);
+    text(text_if_soc, 0, height*0.25);
 
     textAlign(LEFT);
-    // text('current wealth:'+this.nation.wealth, -width*0.2, -height*0.2);
-    // text('current employment:'+this.nation.employment, -width*0.2, -height*0.15);
-    //
-    //
-    // text('current regime:'+this.nation.regime, -width*0.2, height*0.05);
-    // text('current structure:'+this.nation.structure, -width*0.2, height*0.1);
-    //
-    //
-    // text('current tolerance:'+this.nation.welcoming, -width*0.2, height*0.3);
-    // text('current diversity:'+this.nation.diversity, -width*0.2, height*0.35);
-    text('richesse nationale: '+parseInt(this.nation.wealth), -width*0.2, -height*0.2);
-    text('taux d\'emploi: '+parseInt(this.nation.employment), -width*0.2, -height*0.15);
+    text(text_if_wealth+': '+parseInt(this.nation.wealth), -width*0.2, -height*0.2);
+    text(text_if_employment+': '+parseInt(this.nation.employment), -width*0.2, -height*0.15);
 
-    text('système démocratique: '+parseInt(this.nation.regime), -width*0.2, height*0.05);
-    text('climat politique: '+parseInt(this.nation.climate), -width*0.2, height*0.1);
+    text(text_if_regime+': '+parseInt(this.nation.regime), -width*0.2, height*0.05);
+    text(text_if_climate+': '+parseInt(this.nation.climate), -width*0.2, height*0.1);
 
-    text('tolérance à autrui: '+parseInt(this.nation.welcoming), -width*0.2, height*0.3);
-    text('diversité de population: '+parseInt(this.nation.diversity), -width*0.2, height*0.35);
+    text(text_if_welcoming+': '+parseInt(this.nation.welcoming), -width*0.2, height*0.3);
+    text(text_if_diversity+': '+parseInt(this.nation.diversity), -width*0.2, height*0.35);
 
 
     strokeWeight(2);
@@ -129,35 +116,31 @@ var Interface = function(_nation, _index){
     textAlign(CENTER);
     noStroke();
     fill(this.stroke_col);
-    text('NATION '+this.nation.name, 0, -height*0.35);
+    text(text_if_title, 0, -height*0.35);
 
     textSize(24);
     fill(this.stroke_col, this.alpha*0.25);
     // text('STATE OF AFFAIRS', -width*0.2, -height*0.3);
-    text('SITUATION NATIONALE', -width*0.2, -height*0.3);
+    text(text_if_situation, -width*0.2, -height*0.3);
     fill(this.stroke_col, this.alpha);
     // text('POLICIES', width*0.2, -height*0.3);
-    text('POLITIQUES', width*0.2, -height*0.3);
+    text(text_if_policies, width*0.2, -height*0.3);
 
     textAlign(CENTER);
     textSize(14);
     fill(this.stroke_col, this.alpha);
     //policies
     //open borders ++ or --  > has a direct impact on inclusivity but makes employment go down and if its too low, then more violence
-    // text('BORDER CONTROL', 0, -height*0.1);
-    text('OUVERTURE DES FRONTIÈRES', 0, -height*0.1);
+    text(text_if_borders, 0, -height*0.1);
     text(this.nation.borders, 0, -height*0.05);
     //give allocations > has an impact on wealth, but is a factor for having refugees come over
-    // text('STATE SUBSIDIES', 0, -height*0);
-    text('ALLOCATIONS D\'ÉTATS', 0, -height*0);
+    text(text_if_subsidies, 0, -height*0);
     text(this.nation.subsidies, 0, height*0.05);
     //family reunion possibility > if inclusivity is high enough, then it makes for a happier country, otherwise the opposite
-    // text('FAMILY IMMIGRATION POLICIES', 0, height*0.1);
-    text('RÉUNIONS FAMILIALES', 0, height*0.1);
+    text(text_if_family, 0, height*0.1);
     text(this.nation.family, 0, height*0.15);
     //possiblity to become a citizen > this should be a great incentive
-    // text('NATURALIZATION PROCESS', 0, height*0.2);
-    text('PROCESSUS DE NATURALISATION', 0, height*0.2);
+    text(text_if_naturalization, 0, height*0.2);
     text(this.nation.naturalization, 0, height*0.25);
 
     //if there is too much violence, then migrants get killed
