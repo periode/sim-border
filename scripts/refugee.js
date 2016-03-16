@@ -2,15 +2,16 @@ var Refugee = function(_index){
   this.index = _index;
   this.identity = random(10000);
   this.current_nation = nations[0];
+  this.previous_nation = this.current_nation;
   this.position = this.current_nation.getLocation();
   this.body = 4;
   this.skin = color(0, 0, 0);
   this.lifespan = random(10, 20)*1000;
   this.start_life = millis();
+  this.population = Math.floor(random(20, 1000));
   this.alive = true;
 
   this.origin = this.current_nation.getLocation();
-
 
   this.desired_nation = this.seekDestination();
   this.destination = this.desired_nation.loc;
@@ -25,7 +26,7 @@ var Refugee = function(_index){
 
     if(millis() - this.start_life > this.lifespan){
       this.alive = false;
-      acknowledgeDeath();
+      acknowledgeDeath(this);
     }
   }
 }
@@ -63,24 +64,21 @@ Refugee.prototype.travel = function(){
 }
 
 Refugee.prototype.seekDestination = function(){
-  var current_indicator = this.current_nation.wealth + this.current_nation.employment + this.current_nation.welcoming + this.current_nation.diversity;
+  var current_indicator = this.previous_nation.wealth + this.previous_nation.employment + this.previous_nation.welcoming + this.previous_nation.diversity;
 
-  //start with a random neighbor;
   var best_nation = this.current_nation.neighbors[Math.floor(Math.random()*this.current_nation.neighbors.length)];
+  // var best_nation = this.current_nation;
   var best_indicator = 0;
-  // console.log('looking through', this.current_nation.neighbors);
+
   for(var i = 0; i < this.current_nation.neighbors.length; i++){
     var candidate = this.current_nation.neighbors[i];
-    // console.log('candidate is',candidate);
     var indicator = candidate.borders + candidate.subsidies + candidate.family + candidate.naturalization;
-    // console.log('indicator is at',indicator);
+
     if(indicator > best_indicator){
       best_indicator = indicator;
       best_nation = candidate;
     }
   }
-
-  // console.log('best nation is',best_nation);
 
   if(best_indicator > current_indicator){
     return best_nation;
@@ -93,21 +91,25 @@ Refugee.prototype.seekDestination = function(){
 }
 
 Refugee.prototype.arrivedInCountry = function(){
-  this.current_nation.number_of_refugees--;
+  this.previous_nation = this.current_nation;
   this.current_nation = this.desired_nation;
-  this.current_nation.number_of_refugees++;
 
   this.origin = this.current_nation.loc;
-
   this.assessSettlement();
 
   if(!this.settled){
     this.desired_nation = this.seekDestination();
+
     if(this.desired_nation != null)
       this.destination = this.desired_nation.loc;
     else
         this.destination = this.current_nation.loc;
+
     this.lerp_val = 0;
+  }else{
+    this.current_nation.number_of_refugees += this.population;
+    this.current_nation.last_refugee = this;
+    this.current_nation.wealth += map(this.population, 20, 2000, 0.1, 0.5);
   }
 }
 

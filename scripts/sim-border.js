@@ -7,9 +7,12 @@ var nations = [];
 var nations_number = 10;
 var territory_max;
 
+var walls = [];
+
 var refugees = [];
 var refugee_index = 0;
 
+var graves = [];
 var deaths = 0;
 
 var interfaces = [];
@@ -164,9 +167,19 @@ function draw(){
     nations[i].display();
   }
 
+  for(var i = 0; i < walls.length; i++){
+    walls[i].display();
+  }
+
   for(var i = 0; i < refugees.length; i++){
     if(!refugees[i].settled && refugees[i].alive)
       refugees[i].display();
+  }
+
+  stroke(150, 0, 0);
+  for(var i = 0; i < graves.length; i++){
+    line(graves[i].pos.x, graves[i].pos.y-graves[i].size, graves[i].pos.x, graves[i].pos.y+graves[i].size);
+    line(graves[i].pos.x+3, graves[i].pos.y, graves[i].pos.x-graves[i].size, graves[i].pos.y);
   }
 
   for(var i = 0; i < interfaces.length; i++){
@@ -176,8 +189,6 @@ function draw(){
 
   if(legend_displayed)
     displayLegend();
-
-  // drawRoutes();
 
   drawForeground();
 }
@@ -285,6 +296,16 @@ function remove(id){
   }
 }
 
+function hasWallBetween(nation1, nation2){
+
+  var hasWall = false;
+  for(var i = 0; i < walls.length; i++){
+    if((walls[i].builder == nation1 && walls[i].other == nation2) || (walls[i].other == nation1 && walls[i].builder == nation2))
+      hasWall = true;
+  }
+  return hasWall;
+}
+
 function toggleLegend(){
   legend_displayed = !legend_displayed;
 }
@@ -352,17 +373,16 @@ function mouseReleased(){
         }
       }
     }
-
   }
 }
 
-function acknowledgeDeath(){
-  deaths++;
-  memorial.setInnerHTML = text_button_memorial + deaths;
+function acknowledgeDeath(dead){
+  deaths+= dead.population;
+  graves.push({pos: dead.position.copy(), size: Math.floor(random(2, 6))});
+  memorial.innerHTML = text_button_memorial + deaths.toString();
 }
 
 function toggleTranslate(){
-  console.log('toggle',language);
   if(language == 'fr')
     language = 'en';
   else

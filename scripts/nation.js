@@ -18,6 +18,7 @@ var Nation = function(_pos, _rad, _index){
   this.neighbor_coeff = 1.25;
 
   this.number_of_refugees = 0;
+  this.last_refugee = null;
 
   if(this.index != 0){
     //current state - eco
@@ -84,7 +85,7 @@ var Nation = function(_pos, _rad, _index){
   this.coeff_regime_wealth = 0.025;
   this.coeff_regime_borders = 0.025;
   this.coeff_regime_climate = 0.025;
-  this.coeff_regime_naturalization = 0.025;
+  this.coeff_regime_naturalization = 0.1;
 
   this.coeff_climate_wealth = 0.25;
   this.coeff_climate_regime = 0.25;
@@ -95,6 +96,7 @@ var Nation = function(_pos, _rad, _index){
   this.coeff_welcoming_diversity = 0.25;
   this.coeff_welcoming_refugees = 0.25;
   this.coeff_welcoming_employment = 0.25;
+  this.coeff_welcoming_borders = 0.25;
 
   this.coeff_diversity_refugees = 1.0;
 
@@ -192,11 +194,11 @@ Nation.prototype.display = function(){
   noStroke();
   fill(0);
   textAlign(CENTER);
-  
+
   if(language == 'fr')
-    text('réfugiés: '+this.number_of_refugees*1000, 0, 20);
+    text('réfugiés: '+this.number_of_refugees, 0, 20);
   else
-    text('refugees: '+this.number_of_refugees*1000, 0, 20);
+    text('refugees: '+this.number_of_refugees, 0, 20);
 
   pop();
   stroke(0, 50);
@@ -232,6 +234,9 @@ Nation.prototype.react = function(){
   // this.diversity = function of the number of refugees
   this.adjustDiversity();
 
+  if(this.wealth > -5 && this.climate < -2 && this.welcoming < -2 && this.last_refugee != null)
+    this.buildWall();
+
 }
 
 Nation.prototype.adjustWealth = function(){
@@ -262,11 +267,9 @@ Nation.prototype.adjustEmployment = function(){
 }
 
 Nation.prototype.adjustRegime = function(){
-  //regime is a function of wealth, a function of diversity (if it is on one extreme or the other, it's very authoritaria otherwise it's chill-ish), it shouldn't be a direct function of employment, but it's also a function of climate -i guess climate and regime or going to influence each other and regime will be affected by borders and it will be a deterrent for refugees
-  this.regime += this.diversity*this.coeff_regime_wealth + this.climate*this.coeff_regime_climate + this.borders*this.coeff_regime_borders + this.naturalization*this.coeff_regime_naturalization;
-
+  //TODO add naturalization as a factor
   //regime is a reflection of climate and welcoming?
-  this.regime = this.start_regime + this.climate*this.coeff_regime_climate + this.wealth*this.coeff_regime_wealth + (noise(millis()*0.001)-0.5)*0.2;
+  this.regime = this.start_regime + this.climate*this.coeff_regime_climate + this.wealth*this.coeff_regime_wealth - this.naturalization*this.coeff_regime_naturalization + (noise(millis()*0.001)-0.5)*0.2;
 }
 
 Nation.prototype.adjustClimate = function(){
@@ -284,17 +287,37 @@ Nation.prototype.adjustWelcoming = function(){
 
   //maybe the welcoming should be handled internally by refugees? yes
   // this.welcoming += this.employment*this.coeff_welcoming_employment + this.regime*this.coeff_welcoming_regime + this.diversity*this.coeff_welcoming_diversity - this.number_of_refugees*this.coeff_welcoming_refugees;
+  //TODO add borders as a factor
   if(this.climate > 0){
-    this.welcoming = this.climate + this.diversity*this.coeff_welcoming_diversity;
+    this.welcoming = this.climate + this.diversity*this.coeff_welcoming_diversity + this.borders*this.coeff_welcoming_borders;
   }else{
-    this.welcoming = this.climate - abs(this.diversity)*this.coeff_welcoming_diversity;
+    this.welcoming = this.climate - abs(this.diversity)*this.coeff_welcoming_diversity + this.borders*this.coeff_welcoming_borders;
   }
-
 }
 
 Nation.prototype.adjustDiversity = function(){
   //diversity is a straight up function of number of refugees
   this.diversity = this.start_diversity +(this.number_of_refugees/this.population)*10;
+}
+
+Nation.prototype.buildWall = function(){
+  //what is the condition for a wall to be unbuilt?
+  var wallBuilt = false;
+  for(var i = 0; i < walls.length; i++){
+    if(walls[i].builder == this && walls[i].other == this.last_refugee.previous_nation)
+      wallBuilt = true;
+  }
+
+  if(!wallBuilt){
+    console.log('building wall');
+    var neighbor_to_be_removed;
+    for(var i = 0; i < this.last_refugee.previous_nation.neighbors.length; i++){
+      if(this.last_refugee.previous_nation.neighbors[i] == this)
+        neighbor_to_be_removed = i;
+    }
+    this.last_refugee.previous_nation.neighbors.splice(neighbor_to_be_removed, 1);
+    walls.push(new Wall(this, this.last_refugee.previous_nation));
+  }
 }
 
 Nation.prototype.restrictValues = function(){
