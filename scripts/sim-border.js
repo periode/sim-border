@@ -27,14 +27,24 @@ var green;
 
 var language;
 
+//legend
+var legend_nation_pos;
+var legend_nation_territory;
+var legend_nation_offset = [];
+var legend_refugee_pos;
+var legend_wall_pos;
+
 //text
 var text_button_back;
 var text_button_legend;
 var text_button_memorial;
 var text_button_translation;
 
-var text_legend_title;
-
+var text_l_title;
+var text_l_general;
+var text_l_eco;
+var text_l_pol;
+var text_l_soc;
 
 var text_if_title;
 var text_if_situation;
@@ -68,6 +78,8 @@ function setup(){
 
  red = color(255, 0, 0);
  green = color(0, 255, 0);
+
+ setupLegend();
 
  setupStartingNation();
 
@@ -246,7 +258,6 @@ function drawRoutes(){
 }
 
 function addRefugee(){
-  // console.log('adding',refugee_index);
   var r = new Refugee(refugee_index);
   refugees.push(r);
   refugee_index++;
@@ -297,7 +308,6 @@ function remove(id){
 }
 
 function hasWallBetween(nation1, nation2){
-
   var hasWall = false;
   for(var i = 0; i < walls.length; i++){
     if((walls[i].builder == nation1 && walls[i].other == nation2) || (walls[i].other == nation1 && walls[i].builder == nation2))
@@ -324,13 +334,57 @@ function drawLegendFrame(){
 
 function drawLegendText(){
   textAlign(CENTER);
-  text(text_legend_title, width*0.5, height*0.15);
-  //LEGENDE:
-  // - countries
-  // - routes
-  // - refugees
-  // - walls
-  // - color means sth for countries?
+  noStroke();
+  fill(0);
+  textSize(24);
+  text(text_l_title, width*0.5, height*0.15);
+  textSize(18);
+  text(text_l_general, width*0.5, height*0.3);
+  drawLegendNation();
+  drawLegendRefugees();
+  drawLegendWall();
+  textSize(16);
+  text(text_l_eco, width*0.5, height*0.5);
+  text('-', width*0.5, height*0.55);
+  text(text_l_pol, width*0.5, height*0.6);
+  text('-', width*0.5, height*0.65);
+  text(text_l_soc, width*0.5, height*0.7);
+}
+
+function drawLegendNation(){
+  push();
+  stroke(0);
+  fill(150);
+  translate(legend_nation_pos.x, legend_nation_pos.y);
+  var step = 360/8;
+  beginShape();
+  var j = 0
+  for(var i = 0; i < 360; i+=step){
+    vertex(cos(radians(i))*legend_nation_territory*0.5*legend_nation_offset[j], sin(radians(i))*legend_nation_territory*0.5*legend_nation_offset[j]);
+    j++;
+  }
+  endShape(CLOSE);
+  pop();
+}
+
+function drawLegendRefugees(){
+  push();
+  translate(legend_refugee_pos.x, legend_refugee_pos.y);
+  fill(0);
+  for(var i = 0; i < 10; i++){
+    ellipse((noise(i, millis()*0.001)-0.5)*13, (noise(i+i, millis()*0.001)-0.5)*13, 3, 3);
+  }
+  pop();
+}
+
+function drawLegendWall(){
+  push();
+  translate(legend_wall_pos.x, legend_wall_pos.y);
+  stroke(150, 0, 0);
+  strokeWeight(8);
+  strokeCap(SQUARE);
+  line(-10, 10, 10, -10);
+  pop();
 }
 
 function mouseReleased(){
@@ -391,15 +445,30 @@ function toggleTranslate(){
   setupLanguage(language);
 }
 
+function setupLegend(){
+  for(var i = 0; i < 8; i++){
+    legend_nation_offset[i] = 1+random(-0.2, 0.2);
+  }
+
+  legend_nation_pos = createVector(width*0.385, height*0.365);
+  legend_nation_territory = width*0.04;
+
+  legend_refugee_pos = createVector(width*0.525, height*0.365);
+  legend_wall_pos = createVector(width*0.655, height*0.365);
+}
+
 function setupLanguage(lang){
-  console.log('current',language);
   if(lang == 'fr'){
     text_button_back = 'retour';
     text_button_legend = 'légende';
     text_button_memorial = 'morts en chemin: ';
     text_button_translation = 'english';
 
-    text_legend_title = 'LÉGENDE';
+    text_l_title = 'LÉGENDE';
+    text_l_general = "Chaque pays peut accueillir des réfugiés ou construire un mur.";
+    text_l_eco = "La richesse et le taux d'emploi d'un pays dépendent en partie des allocations allouées aux réfugiées.\nCette situation économique est représentée par l'épaisseur de la bordure du pays.";
+    text_l_pol = "L'autorité d'un régime et le climat politique d'un pays dépendent en partie de l'ouverture des frontières et de la facilité de naturalisation.\nCette situation politique est représentée la teinte de gris du pays.";
+    text_l_soc = "La tolérance envers autrui et la diversité de population dépendent en partie du climat politique et du rassemblement des familles.\nCette situation sociale est représentée par l'absence ou la présence de murs.";
 
     text_if_title = 'RÉPUBLIQUE NATIONALE';
     text_if_situation = 'SITUATION INTERNE';
@@ -425,7 +494,11 @@ function setupLanguage(lang){
     text_button_memorial = 'deaths on the way: ';
     text_button_translation = 'français';
 
-    text_legend_title = 'LEGEND';
+    text_l_title = 'LEGEND';
+    text_l_general = "Each country can welcome refugees or build walls.";
+    text_l_eco = "Wealth and employment depend partly on the amount of subsidies allocated to incoming refugees.\n Wealth is represented by the thickness of a country's outline.";
+    text_l_pol = "Regime stability and political climate are affected by the openness of borders and the naturalization process.\n Political climate is represented by the shade of gray of the country's color.";
+    text_l_soc = "Tolerance to others and diversity are based on the number of refugees settled and the ease for families to reunite.\n Social situation is represented by the presence or absence of walls.";
 
     text_if_title = 'NATIONAL REPUBLIC';
     text_if_situation = 'DOMESTIC SITUATION';

@@ -39,23 +39,16 @@ h3{
 
 p, div, ul{
   font-family: EdwardPro-ExtraLight;
-text-align: center;
+	text-align: center;
 }
 
 ul{
 
 }
 
-/*p, ul{
-  width:60%;
-  margin: auto;
-}*/
-
 div{
   margin-top: 1%;
   margin-bottom: 1%;
-
-
 }
 
 #wrapper{
@@ -63,12 +56,14 @@ div{
 }
 
 #fr{
+	text-align: justify;
   width: 35%;
   float:left;
-	  margin-left: 12%;
+	margin-left: 12%;
 }
 
 #en{
+	text-align: justify;
   width: 35%;
   float:right;
 	margin-right: 12%;

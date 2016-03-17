@@ -97,6 +97,7 @@ var Nation = function(_pos, _rad, _index){
   this.coeff_welcoming_refugees = 0.25;
   this.coeff_welcoming_employment = 0.25;
   this.coeff_welcoming_borders = 0.25;
+  this.coeff_welcoming_family = 0.25;
 
   this.coeff_diversity_refugees = 1.0;
 
@@ -275,9 +276,9 @@ Nation.prototype.adjustRegime = function(){
 Nation.prototype.adjustClimate = function(){
   //climate is a function of employment (a lot of employment keeps people happy
   if(this.employment > 0){
-    this.climate = this.start_climate + this.employment*this.coeff_climate_employment + this.wealth*this.coeff_climate_wealth + (noise(millis()*0.01)-0.5)*0.1;
+    this.climate = this.start_climate + this.employment*this.coeff_climate_employment + this.wealth*this.coeff_climate_wealth + (noise(millis()*0.01)-0.5)*0.1  + this.borders*this.coeff_welcoming_borders;
   }else{//if employment is low, then diversity makes it worse
-    this.climate = this.start_climate + this.employment*this.coeff_climate_employment + this.wealth*this.coeff_climate_wealth + (noise(millis()*0.01)-0.5)*0.1 - abs(this.diversity*0.5);
+    this.climate = this.start_climate + this.employment*this.coeff_climate_employment + this.wealth*this.coeff_climate_wealth + (noise(millis()*0.01)-0.5)*0.1 - abs(this.diversity*0.5)  + this.borders*this.coeff_welcoming_borders;
   }
 
 }
@@ -289,9 +290,9 @@ Nation.prototype.adjustWelcoming = function(){
   // this.welcoming += this.employment*this.coeff_welcoming_employment + this.regime*this.coeff_welcoming_regime + this.diversity*this.coeff_welcoming_diversity - this.number_of_refugees*this.coeff_welcoming_refugees;
   //TODO add borders as a factor
   if(this.climate > 0){
-    this.welcoming = this.climate + this.diversity*this.coeff_welcoming_diversity + this.borders*this.coeff_welcoming_borders;
+    this.welcoming = this.climate + this.diversity*this.coeff_welcoming_diversity + this.family*this.coeff_welcoming_family;
   }else{
-    this.welcoming = this.climate - abs(this.diversity)*this.coeff_welcoming_diversity + this.borders*this.coeff_welcoming_borders;
+    this.welcoming = this.climate - abs(this.diversity)*this.coeff_welcoming_diversity + this.family*this.coeff_welcoming_family;
   }
 }
 
