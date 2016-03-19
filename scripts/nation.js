@@ -11,7 +11,7 @@ var Nation = function(_pos, _rad, _index){
   this.canExpand = true;
   this.tint = color(random(190, 250), 200);
   this.border_intensity = parseInt(random(1, 4));
-  this.population = random(5, 90); //population in million inhabitants
+  this.population = random(50000, 100000); //population in million inhabitants
 
   this.neighbors = [];
 
@@ -19,6 +19,8 @@ var Nation = function(_pos, _rad, _index){
 
   this.number_of_refugees = 0;
   this.last_refugee = null;
+
+  this.walls = [];
 
   if(this.index != 0){
     //current state - eco
@@ -31,7 +33,7 @@ var Nation = function(_pos, _rad, _index){
     //current state - pol
     this.start_regime = random(-6, 6); //0 - authoritarian - 1 - participative
     this.regime = this.start_regime;
-    this.start_climate = random(-6, 6) //0 - bureaucratic - 1 - informal
+    this.start_climate = random(-3, 6) //0 - bureaucratic - 1 - informal
     this.climate = this.start_climate;
 
     //current state - soc
@@ -76,10 +78,10 @@ var Nation = function(_pos, _rad, _index){
   this.coeff_wealth_regime = 0.5;
   this.coeff_wealth_refugee = 0.12;
   this.coeff_wealth_noise = 5;
-  this.coeff_wealth_subsidies = 0.85;
-  this.coeff_wealth_employment = 0.12;
+  this.coeff_wealth_subsidies = 0.15;
+  this.coeff_wealth_employment = 0.02;
 
-  this.coeff_employment_noise = 2;
+  this.coeff_employment_noise = 0.25;
   this.coeff_employment_refugees = 0.5;
 
   this.coeff_regime_wealth = 0.025;
@@ -90,14 +92,15 @@ var Nation = function(_pos, _rad, _index){
   this.coeff_climate_wealth = 0.25;
   this.coeff_climate_regime = 0.25;
   this.coeff_climate_diversity = 0.25;
-  this.coeff_climate_employment = 0.25;
+  this.coeff_climate_employment = 0.45;
+  this.coeff_climate_borders = 0.65;
 
   this.coeff_welcoming_regime = 0.25;
   this.coeff_welcoming_diversity = 0.25;
   this.coeff_welcoming_refugees = 0.25;
   this.coeff_welcoming_employment = 0.25;
-  this.coeff_welcoming_borders = 0.25;
-  this.coeff_welcoming_family = 0.25;
+  this.coeff_welcoming_borders = 0.45;
+  this.coeff_welcoming_family = 0.45;
 
   this.coeff_diversity_refugees = 1.0;
 
@@ -202,9 +205,14 @@ Nation.prototype.display = function(){
     text('refugees: '+this.number_of_refugees, 0, 20);
 
   pop();
-  stroke(0, 50);
+
   strokeWeight(1);
   for(var i = 0; i < this.neighbors.length; i++){
+    if(hasWallBetween(this, this.neighbors[i]))
+      stroke(150, 0, 0, 50);
+    else
+      stroke(0, 50);
+
     line(this.loc.x, this.loc.y, this.neighbors[i].loc.x, this.neighbors[i].loc.y);
   }
 }
@@ -235,19 +243,24 @@ Nation.prototype.react = function(){
   // this.diversity = function of the number of refugees
   this.adjustDiversity();
 
-  if(this.wealth > -5 && this.climate < -2 && this.welcoming < -2 && this.last_refugee != null)
+  if(this.wealth > -5 && this.climate < -2 && this.last_refugee != null)
     this.buildWall();
+
+  if(this.wealth > 2 && this.climate > 0 && this.walls.length > 0)
+    this.tearDownWalls();
+
+  this.tint = max(map(this.climate, -10, 10, 100, 255), 150);
 
 }
 
 Nation.prototype.adjustWealth = function(){
-  this.wealth = this.start_wealth + (noise(millis()*0.00001)-0.5)*this.coeff_wealth_noise;
+  this.wealth = this.start_wealth + (noise(millis()*0.00001)-0.5)*this.coeff_wealth_noise +abs(this.climate)*0.25;
 
   if(this.subsidies > 0)
-    this.wealth -= this.subsidies*this.coeff_wealth_subsidies;
+    this.wealth -= this.subsidies*this.coeff_wealth_subsidies*min(map(this.number_of_refugees, 0, 10000, 0, 1), 1);
 
   if(this.family > 0)
-    this.wealth -= this.family*this.coeff_wealth_family;
+    this.wealth -= this.family*this.coeff_wealth_family*min(map(this.number_of_refugees, 0, 10000, 0, 1), 1);
 
   this.border_intensity = map(this.wealth, -10, 10, 1, 5);
 }
@@ -259,11 +272,7 @@ Nation.prototype.adjustEmployment = function(){
   }else{
     overpop = -1;
   }
-  if(this.wealth > 0){
-    this.employment = this.start_employment + this.wealth + (noise(millis()*0.00005)-0.5)*this.coeff_employment_noise + this.number_of_refugees*this.coeff_employment_refugees*overpop;
-  }else{
-    this.employment = this.start_employment + this.wealth - this.number_of_refugees*this.coeff_employment_refugees + (noise(millis()*0.00005)-0.5)*this.coeff_employment_noise;
-  }
+  this.employment = this.start_employment + this.wealth + (noise(millis()*0.0001)-0.25)*this.coeff_employment_noise + (this.number_of_refugees/this.population) * this.coeff_employment_refugees*overpop;
      //based on wealth, modulated by num of refugees
 }
 
@@ -275,11 +284,7 @@ Nation.prototype.adjustRegime = function(){
 
 Nation.prototype.adjustClimate = function(){
   //climate is a function of employment (a lot of employment keeps people happy
-  if(this.employment > 0){
-    this.climate = this.start_climate + this.employment*this.coeff_climate_employment + this.wealth*this.coeff_climate_wealth + (noise(millis()*0.01)-0.5)*0.1  + this.borders*this.coeff_welcoming_borders;
-  }else{//if employment is low, then diversity makes it worse
-    this.climate = this.start_climate + this.employment*this.coeff_climate_employment + this.wealth*this.coeff_climate_wealth + (noise(millis()*0.01)-0.5)*0.1 - abs(this.diversity*0.5)  + this.borders*this.coeff_welcoming_borders;
-  }
+    this.climate = this.start_climate + Math.floor(this.employment)*this.coeff_climate_employment + (noise(millis()*0.01)-0.35)*0.1 - this.borders*this.coeff_welcoming_borders + (this.number_of_refugees/this.population)*2;
 
 }
 
@@ -302,7 +307,6 @@ Nation.prototype.adjustDiversity = function(){
 }
 
 Nation.prototype.buildWall = function(){
-  //what is the condition for a wall to be unbuilt?
   var wallBuilt = false;
   for(var i = 0; i < walls.length; i++){
     if(walls[i].builder == this && walls[i].other == this.last_refugee.previous_nation)
@@ -310,15 +314,37 @@ Nation.prototype.buildWall = function(){
   }
 
   if(!wallBuilt){
-    console.log('building wall');
     var neighbor_to_be_removed;
     for(var i = 0; i < this.last_refugee.previous_nation.neighbors.length; i++){
       if(this.last_refugee.previous_nation.neighbors[i] == this)
         neighbor_to_be_removed = i;
     }
     this.last_refugee.previous_nation.neighbors.splice(neighbor_to_be_removed, 1);
-    walls.push(new Wall(this, this.last_refugee.previous_nation));
+    var w = new Wall(this, this.last_refugee.previous_nation);
+    walls.push(w);
+    this.walls.push(w);
   }
+}
+
+Nation.prototype.tearDownWalls = function(){
+  console.log('removing wall');
+  var to_be_removed = [];
+
+  for(var i = 0; i < walls.length; i++){
+    for(var j = 0; j < this.walls.length; j++){
+      if(walls[i] == this.walls[j]){
+        to_be_removed.push(i);
+      }
+    }
+  }
+
+  //removing walls from the global array
+  for(var i = 0; i < to_be_removed.length; i++){
+    walls.splice(to_be_removed[i], 1);
+  }
+
+  //removing walls from local array
+  this.walls = [];
 }
 
 Nation.prototype.restrictValues = function(){

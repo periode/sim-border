@@ -37,7 +37,6 @@ Refugee.prototype.display = function(){
   fill(this.skin);
   push();
   translate(this.position.x, this.position.y);
-  // ellipse(0, 0, this.body, this.body);
   for(var i =0 ; i < 4; i++){
     ellipse((noise(i, millis()*0.001)-0.5)*10, (noise(i+i, millis()*0.001)-0.5)*10, this.body*0.5, this.body*0.5);
   }
@@ -50,8 +49,6 @@ Refugee.prototype.drawItinerary = function(){
   strokeWeight(1);
   stroke(this.skin);
   line(this.position.x, this.position.y, this.destination.x, this.destination.y);
-  stroke(this.skin*0.5);
-  line(this.position.x, this.position.y, this.origin.x, this.origin.y);
 }
 
 Refugee.prototype.travel = function(){
@@ -67,7 +64,7 @@ Refugee.prototype.seekDestination = function(){
   var current_indicator = this.previous_nation.wealth + this.previous_nation.employment + this.previous_nation.welcoming + this.previous_nation.diversity;
 
   var best_nation = this.current_nation.neighbors[Math.floor(Math.random()*this.current_nation.neighbors.length)];
-  // var best_nation = this.current_nation;
+
   var best_indicator = 0;
 
   for(var i = 0; i < this.current_nation.neighbors.length; i++){
@@ -107,6 +104,10 @@ Refugee.prototype.arrivedInCountry = function(){
 
     this.lerp_val = 0;
   }else{
+    settlers += this.population;
+    settle.innerHTML = text_button_settle+''+settlers.toString();
+    travelers -= this.population;
+    travel.innerHTML = text_button_travel+''+travelers.toString();
     this.current_nation.number_of_refugees += this.population;
     this.current_nation.last_refugee = this;
     this.current_nation.wealth += map(this.population, 20, 2000, 0.1, 0.5);
@@ -116,6 +117,6 @@ Refugee.prototype.arrivedInCountry = function(){
 Refugee.prototype.assessSettlement = function(){
   //look for an average of wealth + employment + tolerance + subsidies + family + naturalization. if it is above a certain threshold, then settle
   var satisfaction = this.current_nation.wealth*0.16 + this.current_nation.employment*0.16 + this.current_nation.welcoming*0.16 + this.current_nation.subsidies*0.16 + this.current_nation.family*0.16 + this.current_nation.naturalization*0.16;
-  if(satisfaction > 0.5)
+  if(satisfaction > 2)
     this.settled = true;
 }

@@ -1,6 +1,8 @@
 var back;
 var legend;
 var memorial;
+var travel;
+var settle;
 var translation;
 
 var nations = [];
@@ -12,6 +14,8 @@ var walls = [];
 var refugees = [];
 var refugee_index = 0;
 
+var travelers = 0;
+var settlers = 0;
 var graves = [];
 var deaths = 0;
 
@@ -38,6 +42,8 @@ var legend_wall_pos;
 var text_button_back;
 var text_button_legend;
 var text_button_memorial;
+var text_button_settle;
+var text_button_travel;
 var text_button_translation;
 
 var text_l_title;
@@ -136,6 +142,28 @@ function setup(){
   memorial.style.fontSize = '1.5em';
   document.body.appendChild(memorial);
 
+  travel = document.createElement('span');
+  travel.style.position = 'absolute';
+  travel.style.right = "1%";
+  travel.style.top = '8.5%';
+  travel.style.color = 'black';
+  travel.style.background = 'rgba(255, 255, 255, 0.75)';
+  travel.style.padding = '0.5%';
+  travel.style.fontFamily = 'EdwardPro-Normal';
+  travel.style.fontSize = '1.5em';
+  document.body.appendChild(travel);
+
+  settle = document.createElement('span');
+  settle.style.position = 'absolute';
+  settle.style.right = "1%";
+  settle.style.top = '16%';
+  settle.style.color = 'black';
+  settle.style.background = 'rgba(255, 255, 255, 0.75)';
+  settle.style.padding = '0.5%';
+  settle.style.fontFamily = 'EdwardPro-Normal';
+  settle.style.fontSize = '1.5em';
+  document.body.appendChild(settle);
+
   translation = document.createElement('span');
   translation.style.position = 'absolute';
   translation.style.left = "1%";
@@ -189,6 +217,7 @@ function draw(){
   }
 
   stroke(150, 0, 0);
+  strokeWeight(1);
   for(var i = 0; i < graves.length; i++){
     line(graves[i].pos.x, graves[i].pos.y-graves[i].size, graves[i].pos.x, graves[i].pos.y+graves[i].size);
     line(graves[i].pos.x+3, graves[i].pos.y, graves[i].pos.x-graves[i].size, graves[i].pos.y);
@@ -249,18 +278,12 @@ function drawForeground(){
   rect(0, height*0.995, width, height*0.005);
 }
 
-function drawRoutes(){
-  for(var i = 0; i < nations.length; i++){
-    for(var j = 0; j < nations.length; j++){
-      line(nations[i].getLocation().x, nations[i].getLocation().y, nations[j].getLocation().x, nations[j].getLocation().y);
-    }
-  }
-}
-
 function addRefugee(){
   var r = new Refugee(refugee_index);
   refugees.push(r);
   refugee_index++;
+  travelers+=r.population;
+  travel.innerHTML = text_button_travel+''+travelers.toString();
 }
 
 function setupStartingNation(){
@@ -400,7 +423,7 @@ function mouseReleased(){
     }
   }else{
     //QUIT INTERFACE
-    if(!(mouseX > width*0.1 && mouseX < width*0.9 && mouseY > height*0.1 && mouseY < height*0.8)){
+    if(!(mouseX > width*0.15 && mouseX < width*0.85 && mouseY > height*0.1 && mouseY < height*0.8)){
       for(var i = 0; i < interfaces.length; i++){
         interfaces[i].is_displayed = false;
       }
@@ -432,8 +455,10 @@ function mouseReleased(){
 
 function acknowledgeDeath(dead){
   deaths+= dead.population;
+  travelers -= dead.population
   graves.push({pos: dead.position.copy(), size: Math.floor(random(2, 6))});
   memorial.innerHTML = text_button_memorial + deaths.toString();
+  travel.innerHTML = text_button_travel + travelers.toString();
 }
 
 function toggleTranslate(){
@@ -461,7 +486,9 @@ function setupLanguage(lang){
   if(lang == 'fr'){
     text_button_back = 'retour';
     text_button_legend = 'légende';
-    text_button_memorial = 'morts en chemin: ';
+    text_button_memorial = 'morts: ';
+    text_button_settle = 'arrivés: ';
+    text_button_travel = 'en route: ';
     text_button_translation = 'english';
 
     text_l_title = 'LÉGENDE';
@@ -474,9 +501,9 @@ function setupLanguage(lang){
     text_if_situation = 'SITUATION INTERNE';
     text_if_policies = 'POLITIQUES D\'IMMIGRATION';
 
-    text_if_pol = 'Politique';
-    text_if_soc = 'Économie';
-    text_if_eco = 'Social';
+    text_if_pol = 'POLITIQUE';
+    text_if_soc = 'ÉCONOMIE';
+    text_if_eco = 'SOCIAL';
     text_if_wealth = 'Richesse nationale';
     text_if_employment = 'Taux d\'emploi';
     text_if_regime = 'Stabilité politique';
@@ -491,7 +518,9 @@ function setupLanguage(lang){
   }else if(lang == 'en'){
     text_button_back = 'back';
     text_button_legend = 'legend';
-    text_button_memorial = 'deaths on the way: ';
+    text_button_memorial = 'dead: ';
+    text_button_settle = 'settled: ';
+    text_button_travel = 'on the way: ';
     text_button_translation = 'français';
 
     text_l_title = 'LEGEND';
@@ -504,9 +533,9 @@ function setupLanguage(lang){
     text_if_situation = 'DOMESTIC SITUATION';
     text_if_policies = 'IMMIGRATION POLICIES';
 
-    text_if_pol = 'Politics';
-    text_if_soc = 'Economy';
-    text_if_eco = 'Social';
+    text_if_pol = 'POLITICS';
+    text_if_soc = 'ECONOMY';
+    text_if_eco = 'SOCIAL';
     text_if_wealth = 'Domestic wealth';
     text_if_employment = 'Employment rate';
     text_if_regime = 'Political stability';
@@ -523,6 +552,8 @@ function setupLanguage(lang){
   back.innerHTML = text_button_back;
   legend.innerHTML = text_button_legend;
   memorial.innerHTML = text_button_memorial+''+deaths.toString();
+  travel.innerHTML = text_button_travel+''+travelers.toString();
+  settle.innerHTML = text_button_settle+''+settlers.toString();
   translation.innerHTML = text_button_translation;
 }
 

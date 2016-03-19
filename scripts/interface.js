@@ -2,7 +2,7 @@ var Interface = function(_nation, _index){
   this.nation = _nation;
   this.index = _index;
   this.pos = createVector(width*0.5, height*0.5);
-  this.w = width*0.8;
+  this.w = width*0.7;
   this.h = height*0.8;
 
   this.stroke_col =  0;
@@ -12,8 +12,8 @@ var Interface = function(_nation, _index){
   this.is_displayed = false;
   this.displaying_state = true;
 
-  var button_left = -width*0.3+width*0.5;
-  var button_right = width*0.3+width*0.5;
+  var button_left = -width*0.2+width*0.5;
+  var button_right = width*0.2+width*0.5;
   var button_top = -height*0.1+height*0.5;
   var button_middle_top = 0+height*0.5;
   var button_middle_bottom = height*0.1+height*0.5;
@@ -71,36 +71,47 @@ var Interface = function(_nation, _index){
     textSize(14);
     fill(this.stroke_col, this.alpha);
     textAlign(CENTER);
-    text(text_if_eco, 0, -height*0.25);
+    textSize(10);
+    text(text_if_soc, 0, -height*0.225);
     text(text_if_pol, 0, 0);
-    text(text_if_soc, 0, height*0.25);
-
-    textAlign(LEFT);
-    text(text_if_wealth+': '+parseInt(this.nation.wealth), -width*0.2, -height*0.2);
-    text(text_if_employment+': '+parseInt(this.nation.employment), -width*0.2, -height*0.15);
-
-    text(text_if_regime+': '+parseInt(this.nation.regime), -width*0.2, height*0.05);
-    text(text_if_climate+': '+parseInt(this.nation.climate), -width*0.2, height*0.1);
-
-    text(text_if_welcoming+': '+parseInt(this.nation.welcoming), -width*0.2, height*0.3);
-    text(text_if_diversity+': '+parseInt(this.nation.diversity), -width*0.2, height*0.35);
+    text(text_if_eco, 0, height*0.2);
 
 
-    strokeWeight(2);
+    textSize(14);
+    text(text_if_wealth+': '+parseInt(this.nation.wealth), 0, -height*0.175);
+    text(text_if_employment+': '+parseInt(this.nation.employment), 0, -height*0.1);
+
+    text(text_if_regime+': '+parseInt(this.nation.regime), 0, height*0.05);
+    text(text_if_climate+': '+parseInt(this.nation.climate), 0, height*0.125);
+
+    text(text_if_welcoming+': '+parseInt(this.nation.welcoming), 0, height*0.25);
+    text(text_if_diversity+': '+parseInt(this.nation.diversity), 0, height*0.325);
+
+
+    strokeWeight(3);
     push();
-    translate(width*0.2, -height*0.01);
+
     stroke(lerpColor(red, green, map(this.nation.wealth, -10, 10, 0, 1)));
-    line(-width*0.2, -height*0.2, map(this.nation.wealth, -10, 10, -width*0.2, width*0.15), -height*0.2);
+    line(0, -height*0.15, map(this.nation.wealth, -10, 10, -width*0.2, width*0.15), -height*0.15);
+    line(0, -height*0.14, 0, -height*0.16);
     stroke(lerpColor(red, green, map(this.nation.employment, -10, 10, 0, 1)));
-    line(-width*0.2, -height*0.15, map(this.nation.employment, -10, 10, -width*0.2, width*0.15), -height*0.15);
+    line(0, -height*0.075, map(this.nation.employment, -10, 10, -width*0.2, width*0.15), -height*0.075);
+    line(0, -height*0.065, 0, -height*0.085);
+
     stroke(lerpColor(red, green, map(this.nation.regime, -10, 10, 0, 1)));
-    line(-width*0.2, height*0.05, map(this.nation.regime, -10, 10, -width*0.2, width*0.15), height*0.05);
+    line(0, height*0.075, map(this.nation.regime, -10, 10, -width*0.2, width*0.15), height*0.075);
+    line(0, height*0.065, 0, height*0.085);
     stroke(lerpColor(red, green, map(this.nation.climate, -10, 10, 0, 1)));
-    line(-width*0.2, height*0.1, map(this.nation.climate, -10, 10, -width*0.2, width*0.15), height*0.1);
+    line(0, height*0.15, map(this.nation.climate, -10, 10, -width*0.2, width*0.15), height*0.15);
+    line(0, height*0.14, 0, height*0.16);
+
     stroke(lerpColor(red, green, map(this.nation.welcoming, -10, 10, 0, 1)));
-    line(-width*0.2, height*0.3, map(this.nation.welcoming, -10, 10, -width*0.2, width*0.15), height*0.3);
+    line(0, height*0.275, map(this.nation.welcoming, -10, 10, -width*0.2, width*0.15), height*0.275);
+    line(0, height*0.265, 0, height*0.285);
     stroke(lerpColor(red, green, map(this.nation.diversity, -10, 10, 0, 1)));
-    line(-width*0.2, height*0.35, map(this.nation.diversity, -10, 10, -width*0.2, width*0.15), height*0.35);
+    line(0, height*0.35, map(this.nation.diversity, -10, 10, -width*0.2, width*0.15), height*0.35);
+    line(0, height*0.36, 0, height*0.34);
+
     pop();
   }
 
