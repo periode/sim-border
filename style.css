@@ -37,7 +37,7 @@ h3{
   font-family: EdwardPro-Normal;
 }
 
-p, div, ul{
+p, ul{
   font-family: EdwardPro-ExtraLight;
 	text-align: center;
 }
@@ -47,8 +47,10 @@ ul{
 }
 
 div{
+	font-family: EdwardPro-ExtraLight;
   margin-top: 1%;
   margin-bottom: 1%;
+	text-align: justify;
 }
 
 #wrapper{
@@ -56,14 +58,12 @@ div{
 }
 
 #fr{
-	text-align: justify;
   width: 35%;
   float:left;
 	margin-left: 12%;
 }
 
 #en{
-	text-align: justify;
   width: 35%;
   float:right;
 	margin-right: 12%;
@@ -76,4 +76,14 @@ div{
   width: 100%;
   text-align: center;
 	padding-top: 1%;
+}
+
+.header{
+	font-size: 0.9em;
+
+}
+
+.instruction{
+	font-size: 1.2em;
+	text-align: center;
 }

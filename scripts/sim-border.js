@@ -13,6 +13,7 @@ var walls = [];
 
 var refugees = [];
 var refugee_index = 0;
+var refugee_add_interval = 3000;
 
 var travelers = 0;
 var settlers = 0;
@@ -104,7 +105,7 @@ function setup(){
  setupInterfaces();
 
   setTimeout(function(){
-    setInterval(addRefugee, 5000);
+    setTimeout(addRefugee, refugee_add_interval);
   }, 3000);
 
   back = document.createElement('a');
@@ -284,6 +285,9 @@ function addRefugee(){
   refugee_index++;
   travelers+=r.population;
   travel.innerHTML = text_button_travel+''+travelers.toString();
+
+  refugee_add_interval = random(1500, 3000)*((cos(millis()*0.001)+1)*4);
+  setTimeout(addRefugee, refugee_add_interval);
 }
 
 function setupStartingNation(){
@@ -366,6 +370,7 @@ function drawLegendText(){
   drawLegendNation();
   drawLegendRefugees();
   drawLegendWall();
+  drawLegendGrave();
   textSize(16);
   text(text_l_eco, width*0.5, height*0.5);
   text('-', width*0.5, height*0.55);
@@ -407,6 +412,17 @@ function drawLegendWall(){
   strokeWeight(8);
   strokeCap(SQUARE);
   line(-10, 10, 10, -10);
+  pop();
+}
+
+function drawLegendGrave(){
+  push();
+  translate(legend_grave_pos.x, legend_grave_pos.y);
+  stroke(100, 0, 0);
+  strokeWeight(1);
+  strokeCap(SQUARE);
+  line(0, 6, 0, -2);
+  line(-2, 0, 3, 0);
   pop();
 }
 
@@ -480,6 +496,7 @@ function setupLegend(){
 
   legend_refugee_pos = createVector(width*0.525, height*0.365);
   legend_wall_pos = createVector(width*0.655, height*0.365);
+  legend_grave_pos = createVector(width*0.535, height*0.365);
 }
 
 function setupLanguage(lang){

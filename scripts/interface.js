@@ -12,8 +12,8 @@ var Interface = function(_nation, _index){
   this.is_displayed = false;
   this.displaying_state = true;
 
-  var button_left = -width*0.2+width*0.5;
-  var button_right = width*0.2+width*0.5;
+  var button_left = -width*0.1+width*0.5;
+  var button_right = width*0.1+width*0.5;
   var button_top = -height*0.1+height*0.5;
   var button_middle_top = 0+height*0.5;
   var button_middle_bottom = height*0.1+height*0.5;
@@ -63,7 +63,7 @@ var Interface = function(_nation, _index){
     fill(this.stroke_col, this.alpha);
     // text('STATE OF AFFAIRS', -width*0.2, -height*0.3);
     text(text_if_situation, -width*0.2, -height*0.3);
-    fill(this.stroke_col, this.alpha*0.25);
+    fill(this.stroke_col, this.alpha*0.25*(cos(millis()*0.0035)+1)+30);
     // text('POLICIES', width*0.2, -height*0.3);
     text(text_if_policies, width*0.2, -height*0.3);
 
@@ -88,28 +88,28 @@ var Interface = function(_nation, _index){
     text(text_if_diversity+': '+parseInt(this.nation.diversity), 0, height*0.325);
 
 
-    strokeWeight(3);
+    strokeWeight(2);
     push();
 
     stroke(lerpColor(red, green, map(this.nation.wealth, -10, 10, 0, 1)));
-    line(0, -height*0.15, map(this.nation.wealth, -10, 10, -width*0.2, width*0.15), -height*0.15);
+    line(0, -height*0.15, map(this.nation.wealth, -10, 10, -width*0.2, width*0.2), -height*0.15);
     line(0, -height*0.14, 0, -height*0.16);
     stroke(lerpColor(red, green, map(this.nation.employment, -10, 10, 0, 1)));
-    line(0, -height*0.075, map(this.nation.employment, -10, 10, -width*0.2, width*0.15), -height*0.075);
+    line(0, -height*0.075, map(this.nation.employment, -10, 10, -width*0.2, width*0.2), -height*0.075);
     line(0, -height*0.065, 0, -height*0.085);
 
     stroke(lerpColor(red, green, map(this.nation.regime, -10, 10, 0, 1)));
-    line(0, height*0.075, map(this.nation.regime, -10, 10, -width*0.2, width*0.15), height*0.075);
+    line(0, height*0.075, map(this.nation.regime, -10, 10, -width*0.2, width*0.2), height*0.075);
     line(0, height*0.065, 0, height*0.085);
     stroke(lerpColor(red, green, map(this.nation.climate, -10, 10, 0, 1)));
-    line(0, height*0.15, map(this.nation.climate, -10, 10, -width*0.2, width*0.15), height*0.15);
+    line(0, height*0.15, map(this.nation.climate, -10, 10, -width*0.2, width*0.2), height*0.15);
     line(0, height*0.14, 0, height*0.16);
 
     stroke(lerpColor(red, green, map(this.nation.welcoming, -10, 10, 0, 1)));
-    line(0, height*0.275, map(this.nation.welcoming, -10, 10, -width*0.2, width*0.15), height*0.275);
+    line(0, height*0.275, map(this.nation.welcoming, -10, 10, -width*0.2, width*0.2), height*0.275);
     line(0, height*0.265, 0, height*0.285);
     stroke(lerpColor(red, green, map(this.nation.diversity, -10, 10, 0, 1)));
-    line(0, height*0.35, map(this.nation.diversity, -10, 10, -width*0.2, width*0.15), height*0.35);
+    line(0, height*0.35, map(this.nation.diversity, -10, 10, -width*0.2, width*0.2), height*0.35);
     line(0, height*0.36, 0, height*0.34);
 
     pop();
@@ -130,7 +130,7 @@ var Interface = function(_nation, _index){
     text(text_if_title, 0, -height*0.35);
 
     textSize(24);
-    fill(this.stroke_col, this.alpha*0.25);
+    fill(this.stroke_col, this.alpha*0.25*(cos(millis()*0.0035)+1)+30);
     // text('STATE OF AFFAIRS', -width*0.2, -height*0.3);
     text(text_if_situation, -width*0.2, -height*0.3);
     fill(this.stroke_col, this.alpha);
