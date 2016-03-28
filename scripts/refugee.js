@@ -116,7 +116,10 @@ Refugee.prototype.arrivedInCountry = function(){
 
 Refugee.prototype.assessSettlement = function(){
   //look for an average of wealth + employment + tolerance + subsidies + family + naturalization. if it is above a certain threshold, then settle
-  var satisfaction = this.current_nation.wealth*0.16 + this.current_nation.employment*0.16 + this.current_nation.welcoming*0.16 + this.current_nation.subsidies*0.16 + this.current_nation.family*0.16 + this.current_nation.naturalization*0.16;
+  var satisfaction = (this.current_nation.wealth + this.current_nation.employment + this.current_nation.welcoming + this.current_nation.subsidies + this.current_nation.family + this.current_nation.naturalization)/6;
   if(satisfaction > 2)
     this.settled = true;
+
+
+  console.log('settled?',this.settled);
 }
