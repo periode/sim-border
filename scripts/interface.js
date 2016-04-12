@@ -12,6 +12,13 @@ var Interface = function(_nation, _index){
   this.is_displayed = false;
   this.displaying_state = true;
 
+  this.situation_pos = createVector(width*0.2, -height*0.3);
+  this.policies_pos = createVector(-width*0.2, -height*0.3);
+  this.highlight_pos = this.situation_pos;
+  this.lerp_val = 1;
+  this.lerp_inc = 0.1;
+  this.lerp_dir = 1;
+
   var button_left = -width*0.1+width*0.5;
   var button_right = width*0.1+width*0.5;
   var button_top = -height*0.1+height*0.5;
@@ -32,7 +39,9 @@ var Interface = function(_nation, _index){
   this.buttons[7] = new Button('naturalization', '+', 'inc', createVector(button_right, button_bottom), this.nation, button_w, button_h);
 
   this.update = function(){
-
+    this.lerp_val += this.lerp_inc*this.lerp_dir;
+    this.lerp_val = constrain(this.lerp_val, 0, 1);
+    this.highlight_pos = p5.Vector.lerp(this.situation_pos, this.policies_pos, this.lerp_val);
   }
 
   this.display = function(){
@@ -51,6 +60,11 @@ var Interface = function(_nation, _index){
     }else{
       this.displayPolicy();
     }
+
+    stroke(50);
+    strokeWeight(1);
+    noFill();
+    rect(this.highlight_pos.x, this.highlight_pos.y, width*0.275, height*0.075);
     pop();
   }
 
@@ -61,8 +75,8 @@ var Interface = function(_nation, _index){
 
     textSize(24);
     fill(this.stroke_col, this.alpha);
-    // text('STATE OF AFFAIRS', -width*0.2, -height*0.3);
     text(text_if_situation, -width*0.2, -height*0.3);
+
     fill(this.stroke_col, this.alpha*0.25*(cos(millis()*0.0035)+1)+30);
     // text('POLICIES', width*0.2, -height*0.3);
     text(text_if_policies, width*0.2, -height*0.3);
@@ -70,6 +84,13 @@ var Interface = function(_nation, _index){
 
     textSize(14);
     fill(this.stroke_col, this.alpha);
+    text('POPULATION: '+parseInt(this.nation.population), -width*0.2, -height*0.225);
+
+    if(language == 'fr')
+      text('REFUGIÉS: '+this.nation.refugees.length, width*0.2, -height*0.225);
+    else
+      text('REFUGEES: '+this.nation.refugees.length, width*0.2, -height*0.225);
+
     textAlign(CENTER);
     textSize(10);
     text(text_if_soc, 0, -height*0.225);
@@ -131,15 +152,20 @@ var Interface = function(_nation, _index){
 
     textSize(24);
     fill(this.stroke_col, this.alpha*0.25*(cos(millis()*0.0035)+1)+30);
-    // text('STATE OF AFFAIRS', -width*0.2, -height*0.3);
     text(text_if_situation, -width*0.2, -height*0.3);
     fill(this.stroke_col, this.alpha);
-    // text('POLICIES', width*0.2, -height*0.3);
     text(text_if_policies, width*0.2, -height*0.3);
 
     textAlign(CENTER);
     textSize(14);
     fill(this.stroke_col, this.alpha);
+    text('POPULATION: '+parseInt(this.nation.population), -width*0.2, -height*0.225);
+
+    if(language == 'fr')
+      text('REFUGIÉS: '+this.nation.refugees.length, width*0.2, -height*0.225);
+    else
+      text('REFUGEES: '+this.nation.refugees.length, width*0.2, -height*0.225);
+      
     //policies
     //open borders ++ or --  > has a direct impact on inclusivity but makes employment go down and if its too low, then more violence
     text(text_if_borders, 0, -height*0.1);
@@ -153,7 +179,5 @@ var Interface = function(_nation, _index){
     //possiblity to become a citizen > this should be a great incentive
     text(text_if_naturalization, 0, height*0.2);
     text(this.nation.naturalization, 0, height*0.25);
-
-    //if there is too much violence, then migrants get killed
   }
 }

@@ -1,4 +1,5 @@
 var back;
+var restart;
 var legend;
 var memorial;
 var travel;
@@ -41,6 +42,7 @@ var legend_wall_pos;
 
 //text
 var text_button_back;
+var text_button_restart;
 var text_button_legend;
 var text_button_memorial;
 var text_button_settle;
@@ -108,74 +110,9 @@ function setup(){
     setTimeout(addRefugee, refugee_add_interval);
   }, 3000);
 
-  back = document.createElement('a');
-  back.style.left = "1%";
-  back.style.top = '1%';
-  back.style.position = 'absolute';
-  back.style.color = 'black';
-  back.style.padding = '0.5%';
-  back.style.background = 'rgba(255, 255, 255, 0.75)';
-  back.style.fontFamily = 'EdwardPro-Normal';
-  back.style.fontSize = '1.5em';
-  back.setAttribute('href', 'index.html');
-  document.body.appendChild(back);
 
-  legend = document.createElement('a');
-  legend.style.left = "1%";
-  legend.style.bottom = '1%';
-  legend.style.position = 'absolute';
-  legend.style.background = 'rgba(255, 255, 255, 0.75)';
-  legend.style.color = 'black';
-  legend.style.padding = '0.5%';
-  legend.style.fontFamily = 'EdwardPro-Normal';
-  legend.style.fontSize = '1.5em';
-  legend.setAttribute('onclick', 'toggleLegend()');
-  document.body.appendChild(legend);
+  setupHTML();
 
-  memorial = document.createElement('span');
-  memorial.style.position = 'absolute';
-  memorial.style.right = "1%";
-  memorial.style.top = '1%';
-  memorial.style.color = 'black';
-  memorial.style.background = 'rgba(255, 255, 255, 0.75)';
-  memorial.style.padding = '0.5%';
-  memorial.style.fontFamily = 'EdwardPro-Normal';
-  memorial.style.fontSize = '1.5em';
-  document.body.appendChild(memorial);
-
-  travel = document.createElement('span');
-  travel.style.position = 'absolute';
-  travel.style.right = "1%";
-  travel.style.top = '8.5%';
-  travel.style.color = 'black';
-  travel.style.background = 'rgba(255, 255, 255, 0.75)';
-  travel.style.padding = '0.5%';
-  travel.style.fontFamily = 'EdwardPro-Normal';
-  travel.style.fontSize = '1.5em';
-  document.body.appendChild(travel);
-
-  settle = document.createElement('span');
-  settle.style.position = 'absolute';
-  settle.style.right = "1%";
-  settle.style.top = '16%';
-  settle.style.color = 'black';
-  settle.style.background = 'rgba(255, 255, 255, 0.75)';
-  settle.style.padding = '0.5%';
-  settle.style.fontFamily = 'EdwardPro-Normal';
-  settle.style.fontSize = '1.5em';
-  document.body.appendChild(settle);
-
-  translation = document.createElement('span');
-  translation.style.position = 'absolute';
-  translation.style.left = "1%";
-  translation.style.top = '10%';
-  translation.style.color = 'black';
-  translation.style.background = 'rgba(255, 255, 255, 0.75)';
-  translation.style.padding = '0.5%';
-  translation.style.fontFamily = 'EdwardPro-Normal';
-  translation.style.fontSize = '1.5em';
-  translation.setAttribute('onclick', 'toggleTranslate()');
-  document.body.appendChild(translation);
 
    setupLanguage(language);
 }
@@ -239,7 +176,7 @@ function drawBackground(){
   // background(160, 190, 253);
   background(255);
 
-  stroke(160, 190, 253, 100);
+  stroke(160, 190, 253, 50);
   var i = 0;
   for(var x = 0; x < width; x += width/50){
     if(i % 4 == 0)
@@ -299,6 +236,89 @@ function setupStartingNation(){
 
   var n = new Nation(position, territory, 0);
   nations.push(n);
+}
+
+function setupHTML(){
+  back = document.createElement('a');
+  back.style.left = "1%";
+  back.style.top = '1%';
+  back.style.position = 'absolute';
+  back.style.color = 'black';
+  back.style.padding = '0.5%';
+  back.style.background = 'rgba(255, 255, 255, 0.75)';
+  back.style.fontFamily = 'EdwardPro-Normal';
+  back.style.fontSize = '1.5em';
+  back.setAttribute('href', 'index.html');
+  document.body.appendChild(back);
+
+  legend = document.createElement('a');
+  legend.style.left = "1%";
+  legend.style.bottom = '1%';
+  legend.style.position = 'absolute';
+  legend.style.background = 'rgba(255, 255, 255, 0.75)';
+  legend.style.color = 'black';
+  legend.style.padding = '0.5%';
+  legend.style.fontFamily = 'EdwardPro-Normal';
+  legend.style.fontSize = '1.5em';
+  legend.setAttribute('onclick', 'toggleLegend()');
+  document.body.appendChild(legend);
+
+  restart = document.createElement('a');
+  restart.style.left = "1%";
+  restart.style.top = '8.5%';
+  restart.style.position = 'absolute';
+  restart.style.color = 'black';
+  restart.style.padding = '0.5%';
+  restart.style.background = 'rgba(255, 255, 255, 0.75)';
+  restart.style.fontFamily = 'EdwardPro-Normal';
+  restart.style.fontSize = '1.5em';
+  restart.setAttribute('href', 'sim-border.html');
+  document.body.appendChild(restart);
+
+  memorial = document.createElement('span');
+  memorial.style.position = 'absolute';
+  memorial.style.right = "1%";
+  memorial.style.top = '1%';
+  memorial.style.color = 'black';
+  memorial.style.background = 'rgba(255, 255, 255, 0.75)';
+  memorial.style.padding = '0.5%';
+  memorial.style.fontFamily = 'EdwardPro-Normal';
+  memorial.style.fontSize = '1.5em';
+  document.body.appendChild(memorial);
+
+  travel = document.createElement('span');
+  travel.style.position = 'absolute';
+  travel.style.right = "1%";
+  travel.style.top = '8.5%';
+  travel.style.color = 'black';
+  travel.style.background = 'rgba(255, 255, 255, 0.75)';
+  travel.style.padding = '0.5%';
+  travel.style.fontFamily = 'EdwardPro-Normal';
+  travel.style.fontSize = '1.5em';
+  document.body.appendChild(travel);
+
+  settle = document.createElement('span');
+  settle.style.position = 'absolute';
+  settle.style.right = "1%";
+  settle.style.top = '16%';
+  settle.style.color = 'black';
+  settle.style.background = 'rgba(255, 255, 255, 0.75)';
+  settle.style.padding = '0.5%';
+  settle.style.fontFamily = 'EdwardPro-Normal';
+  settle.style.fontSize = '1.5em';
+  document.body.appendChild(settle);
+
+  translation = document.createElement('span');
+  translation.style.position = 'absolute';
+  translation.style.left = "1%";
+  translation.style.top = '16%';
+  translation.style.color = 'black';
+  translation.style.background = 'rgba(255, 255, 255, 0.75)';
+  translation.style.padding = '0.5%';
+  translation.style.fontFamily = 'EdwardPro-Normal';
+  translation.style.fontSize = '1.5em';
+  translation.setAttribute('onclick', 'toggleTranslate()');
+  document.body.appendChild(translation);
 }
 
 function setupNations(index){
@@ -452,8 +472,12 @@ function mouseReleased(){
     if(mouseY > height*0.1 && mouseY < height*0.3){
       if(mouseX > width*0.2 && mouseX < width*0.5){
         current_interface.displaying_state = true;
+        if(current_interface.lerp_dir == -1)
+          current_interface.lerp_dir = 1;
       }else if(mouseX > width*0.5 && mouseX < width*0.8){
         current_interface.displaying_state = false;
+        if(current_interface.lerp_dir == 1)
+          current_interface.lerp_dir = -1;
       }
     }
 
@@ -502,6 +526,7 @@ function setupLegend(){
 function setupLanguage(lang){
   if(lang == 'fr'){
     text_button_back = 'retour';
+    text_button_restart = 'recommencer';
     text_button_legend = 'légende';
     text_button_memorial = 'morts: ';
     text_button_settle = 'arrivés: ';
@@ -510,11 +535,11 @@ function setupLanguage(lang){
 
     text_l_title = 'LÉGENDE';
     text_l_general = "Chaque pays peut accueillir des réfugiés ou construire un mur.";
-    text_l_eco = "La richesse et le taux d'emploi d'un pays dépendent en partie des allocations allouées aux réfugiées.\nCette situation économique est représentée par l'épaisseur de la bordure du pays.";
-    text_l_pol = "L'autorité d'un régime et le climat politique d'un pays dépendent en partie de l'ouverture des frontières et de la facilité de naturalisation.\nCette situation politique est représentée la teinte de gris du pays.";
-    text_l_soc = "La tolérance envers autrui et la diversité de population dépendent en partie du climat politique et du rassemblement des familles.\nCette situation sociale est représentée par l'absence ou la présence de murs.";
+    text_l_eco = "La richesse et le taux d'emploi d'un pays dépendent en partie des allocations allouées aux réfugiées.\nCette situation économique est représentée par la surface de la zone gris clair à l'intérieur du pays.";
+    text_l_pol = "L'autorité d'un régime et le climat politique d'un pays dépendent en partie de l'ouverture des frontières et de la facilité de naturalisation.\nCette situation politique est représentée par la teinte de gris du pays.";
+    text_l_soc = "La tolérance envers autrui et la diversité de population dépendent en partie du climat politique et du rassemblement des familles.\nCette situation sociale est représentée par l'épaisseur des frontières.";
 
-    text_if_title = 'RÉPUBLIQUE NATIONALE';
+    text_if_title = 'ÉTAT SOUVERAIN';
     text_if_situation = 'SITUATION INTERNE';
     text_if_policies = 'POLITIQUES D\'IMMIGRATION';
 
@@ -534,6 +559,7 @@ function setupLanguage(lang){
     text_if_naturalization = 'Processus de nationalisation';
   }else if(lang == 'en'){
     text_button_back = 'back';
+    text_button_restart = 'restart';
     text_button_legend = 'legend';
     text_button_memorial = 'dead: ';
     text_button_settle = 'settled: ';
@@ -542,11 +568,11 @@ function setupLanguage(lang){
 
     text_l_title = 'LEGEND';
     text_l_general = "Each country can welcome refugees or build walls.";
-    text_l_eco = "Wealth and employment depend partly on the amount of subsidies allocated to incoming refugees.\n Wealth is represented by the thickness of a country's outline.";
+    text_l_eco = "Wealth and employment depend partly on the amount of subsidies allocated to incoming refugees.\n Wealth is represented by the light gray area within the country.";
     text_l_pol = "Regime stability and political climate are affected by the openness of borders and the naturalization process.\n Political climate is represented by the shade of gray of the country's color.";
-    text_l_soc = "Tolerance to others and diversity are based on the number of refugees settled and the ease for families to reunite.\n Social situation is represented by the presence or absence of walls.";
+    text_l_soc = "Tolerance to others and diversity are based on the number of refugees settled and the ease for families to reunite.\n Social situation is represented by the thickness of its borders.";
 
-    text_if_title = 'NATIONAL REPUBLIC';
+    text_if_title = 'SOVEREIGN STATE';
     text_if_situation = 'DOMESTIC SITUATION';
     text_if_policies = 'IMMIGRATION POLICIES';
 
@@ -567,6 +593,7 @@ function setupLanguage(lang){
   }
 
   back.innerHTML = text_button_back;
+  restart.innerHTML = text_button_restart;
   legend.innerHTML = text_button_legend;
   memorial.innerHTML = text_button_memorial+''+deaths.toString();
   travel.innerHTML = text_button_travel+''+travelers.toString();
