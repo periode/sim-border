@@ -327,7 +327,8 @@ Nation.prototype.adjustWelcoming = function(){
 
 Nation.prototype.adjustDiversity = function(){
   //diversity is a straight up function of number of refugees
-  this.diversity = this.start_diversity +(this.refugees.length/this.population)*20;
+  this.diversity = this.start_diversity +(this.refugees.length/this.population)*5000;
+  // console.log((this.refugees.length/this.population)*40);
 }
 
 Nation.prototype.buildWall = function(){
@@ -351,13 +352,15 @@ Nation.prototype.buildWall = function(){
 }
 
 Nation.prototype.tearDownWalls = function(){
-  console.log('removing wall');
   var to_be_removed = [];
 
   for(var i = 0; i < walls.length; i++){
     for(var j = 0; j < this.walls.length; j++){
       if(walls[i] == this.walls[j]){
         to_be_removed.push(i);
+
+        if(this.neighbors.indexOf(walls[i].other) != -1)
+          this.neighbors.push(walls[i].other);
       }
     }
   }

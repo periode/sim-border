@@ -122,10 +122,12 @@ Refugee.prototype.arrivedInCountry = function(){
     settle.innerHTML = text_button_settle+''+settlers.toString();
     travelers -= this.population;
     travel.innerHTML = text_button_travel+''+travelers.toString();
+    
     var t = this.current_nation.territory*0.5;
+
     for(var i = 0; i < this.population; i++){
       var p = createVector(random(-t, t), random(-t, t));
-      if(p.dist(createVector(0,0)) < this.current_nation.territory*0.35)
+      if(p.dist(createVector(0,0)) < this.current_nation.territory*0.4)
         this.current_nation.refugees.push(p);
     }
 
@@ -138,6 +140,6 @@ Refugee.prototype.assessSettlement = function(){
   //look for an average of wealth + employment + tolerance + subsidies + family + naturalization. if it is above a certain threshold, then settle
   var satisfaction = (this.current_nation.wealth + this.current_nation.employment + this.current_nation.welcoming + this.current_nation.subsidies + this.current_nation.family + this.current_nation.naturalization)/6;
 
-  if(satisfaction > 2)
+  if(satisfaction > 0)
     this.settled = true;
 }
