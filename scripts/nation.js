@@ -213,9 +213,10 @@ Nation.prototype.display = function(){
     point(this.refugees[i].x, this.refugees[i].y);
   }
 
-  noStroke();
-  fill(0);
-  textAlign(CENTER);
+  // noStroke();
+  // fill(0);
+  // textAlign(CENTER);
+  // text(this.diversity, 0, 0);
   pop();
 
   strokeWeight(3);
@@ -277,7 +278,7 @@ Nation.prototype.react = function(){
 }
 
 Nation.prototype.adjustWealth = function(){
-  this.wealth = this.start_wealth + (noise(millis()*0.00001)-0.45)*this.coeff_wealth_noise;
+  this.wealth = this.start_wealth + (noise(millis()*0.00005)-0.45)*this.coeff_wealth_noise;
 
   if(this.subsidies > 0)
     this.wealth -= this.subsidies*this.coeff_wealth_subsidies*min(map(this.refugees.length, 0, 10000, 0, 1), 1);
@@ -295,7 +296,7 @@ Nation.prototype.adjustEmployment = function(){
   }else{
     overpop = -1;
   }
-  this.employment = this.start_employment + this.wealth + (noise(millis()*0.0001)-0.25)*this.coeff_employment_noise + (this.refugees.length/this.population) * this.coeff_employment_refugees*overpop;
+  this.employment = this.start_employment + this.wealth + (noise(millis()*0.0005)-0.25)*this.coeff_employment_noise + (this.refugees.length/this.population) * this.coeff_employment_refugees*overpop;
      //based on wealth, modulated by num of refugees
 }
 
@@ -307,7 +308,7 @@ Nation.prototype.adjustRegime = function(){
 
 Nation.prototype.adjustClimate = function(){
   //climate is a function of employment (a lot of employment keeps people happy
-    this.climate = this.start_climate + Math.floor(this.employment)*this.coeff_climate_employment + (noise(millis()*0.01)-0.35)*0.1 - this.borders*this.coeff_welcoming_borders + (this.refugees.length/this.population)*2;
+    this.climate = this.start_climate + Math.floor(this.employment)*this.coeff_climate_employment + (noise(millis()*0.02)-0.35)*0.1 - this.borders*this.coeff_welcoming_borders + (this.refugees.length/this.population)*2;
 
 }
 
@@ -326,7 +327,7 @@ Nation.prototype.adjustWelcoming = function(){
 
 Nation.prototype.adjustDiversity = function(){
   //diversity is a straight up function of number of refugees
-  this.diversity = this.start_diversity +(this.refugees.length/this.population)*10;
+  this.diversity = this.start_diversity +(this.refugees.length/this.population)*20;
 }
 
 Nation.prototype.buildWall = function(){

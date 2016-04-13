@@ -40,6 +40,7 @@ Refugee.prototype.display = function(){
   for(var i =0 ; i < 4; i++){
     ellipse((noise(i, millis()*0.001)-0.5)*10, (noise(i+i, millis()*0.001)-0.5)*10, this.body*0.5, this.body*0.5);
   }
+  // text(this.settled, 10, 10);
   pop();
 
   this.drawItinerary();
@@ -85,14 +86,14 @@ Refugee.prototype.seekDestination = function(){
 
   best_nations.push(best_nation);
 
-  if(best_indicator > current_indicator){
+  // if(best_indicator > current_indicator){
     best_nation = best_nations[Math.floor(Math.random()*best_nations.length)];
     return best_nation;
-  }else{
-    this.settled = true;
-    refugees.splice(this.index, 1);
-    return this.current_nation;
-  }
+  // }else{
+  //   this.settled = true;
+  //   refugees.splice(this.index, 1);
+  //   return this.current_nation;
+  // }
 
 }
 

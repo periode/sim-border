@@ -6,6 +6,13 @@ var travel;
 var settle;
 var translation;
 
+var day;
+var month;
+var year;
+
+var timer_day = 1000;
+var start_day = 0;
+
 var nations = [];
 var nations_number = 10;
 var territory_max;
@@ -82,6 +89,9 @@ function setup(){
  var cnv = createCanvas(windowWidth, windowHeight);
 
  language = 'fr';
+ day = new Date().getDate();
+ month = new Date().getMonth()+1;
+ year = 2016;
 
  territory_max = height*0.45;
 
@@ -108,13 +118,14 @@ function setup(){
 
   setTimeout(function(){
     setTimeout(addRefugee, refugee_add_interval);
-  }, 3000);
+  }, 2000);
 
 
   setupHTML();
 
+  setupLanguage(language);
 
-   setupLanguage(language);
+  toggleLegend();
 }
 
 function update(){
@@ -169,7 +180,30 @@ function draw(){
   if(legend_displayed)
     displayLegend();
 
+  drawDate();
   drawForeground();
+}
+
+function drawDate(){
+  fill(0);
+  textSize(24);
+  textAlign(CENTER);
+  noStroke();
+  text(''+parseInt(day)+'.'+parseInt(month)+'.'+parseInt(year), width*0.5, height*0.05);
+
+  if(millis() - start_day > timer_day){
+    start_day = millis();
+    day++;
+
+    if(day > 31){
+      day = 1;
+      month++;
+      if(month > 12){
+        month = 1;
+        year++;
+      }
+    }
+  }
 }
 
 function drawBackground(){
@@ -223,7 +257,7 @@ function addRefugee(){
   travelers+=r.population;
   travel.innerHTML = text_button_travel+''+travelers.toString();
 
-  refugee_add_interval = random(1500, 3000)*((cos(millis()*0.001)+1)*4);
+  refugee_add_interval = random(1000, 2000)*((cos(millis()*0.002)+1)*4);
   setTimeout(addRefugee, refugee_add_interval);
 }
 
@@ -255,11 +289,11 @@ function setupHTML(){
   legend.style.left = "1%";
   legend.style.bottom = '1%';
   legend.style.position = 'absolute';
-  legend.style.background = 'rgba(255, 255, 255, 0.75)';
-  legend.style.color = 'black';
+  legend.style.background = 'rgba(0, 0, 0, 1)';
+  legend.style.color = 'white';
   legend.style.padding = '0.5%';
   legend.style.fontFamily = 'EdwardPro-Normal';
-  legend.style.fontSize = '1.5em';
+  legend.style.fontSize = '2em';
   legend.setAttribute('onclick', 'toggleLegend()');
   document.body.appendChild(legend);
 
@@ -533,7 +567,7 @@ function setupLanguage(lang){
     text_button_travel = 'en route: ';
     text_button_translation = 'english';
 
-    text_l_title = 'LÉGENDE';
+    text_l_title = 'SIMBORDER\nune simulation par pierre depaz';
     text_l_general = "Chaque pays peut accueillir des réfugiés ou construire un mur.";
     text_l_eco = "La richesse et le taux d'emploi d'un pays dépendent en partie des allocations allouées aux réfugiées.\nCette situation économique est représentée par la surface de la zone gris clair à l'intérieur du pays.";
     text_l_pol = "L'autorité d'un régime et le climat politique d'un pays dépendent en partie de l'ouverture des frontières et de la facilité de naturalisation.\nCette situation politique est représentée par la teinte de gris du pays.";
@@ -566,7 +600,7 @@ function setupLanguage(lang){
     text_button_travel = 'on the way: ';
     text_button_translation = 'français';
 
-    text_l_title = 'LEGEND';
+    text_l_title = 'SIMBORDER\na simulation by pierre depaz';
     text_l_general = "Each country can welcome refugees or build walls.";
     text_l_eco = "Wealth and employment depend partly on the amount of subsidies allocated to incoming refugees.\n Wealth is represented by the light gray area within the country.";
     text_l_pol = "Regime stability and political climate are affected by the openness of borders and the naturalization process.\n Political climate is represented by the shade of gray of the country's color.";
